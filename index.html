@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasty Recipes - Share Your Culinary Creations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .recipe-grid {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .recipe-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .recipe-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-muted min-h-screen font-sans">
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-primary text-primary-foreground shadow-md">
+            <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold">Tasty Recipes</h1>
+                </div>
+                
+                <div class="w-full md:w-1/3">
+                    <div class="relative">
+                        <input type="text" placeholder="Search recipes..." class="w-full py-2 px-4 pr-10 rounded-full border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground">
+                        <button class="absolute right-3 top-2 text-muted-foreground">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <nav class="mt-4 md:mt-0">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-accent transition-colors">Home</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Categories</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Submit Recipe</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Login</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Hero Section -->
+            <section class="mb-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">Share Your Culinary Masterpieces</h2>
+                <p class="text-muted-foreground text-lg max-w-2xl mx-auto">Discover, create, and share delicious recipes from home cooks around the world.</p>
+                <button class="mt-6 bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">Share Your Recipe</button>
+            </section>
+
+            <!-- Category Filters -->
+            <section class="mb-8">
+                <h3 class="text-xl font-semibold text-foreground mb-4">Browse by Category</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="bg-secondary text-secondary-foreground px-4 py-2 rounded-full hover:bg-secondary/80 transition-colors">All</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Breakfast</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Lunch</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Dinner</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Dessert</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Vegetarian</button>
+                    <button class="bg-background border border-border text-foreground px-4 py-2 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors">Vegan</button>
+                </div>
+            </section>
+
+            <!-- Recipe Grid -->
+            <section>
+                <h3 class="text-xl font-semibold text-foreground mb-6">Featured Recipes</h3>
+                <div class="recipe-grid grid gap-6">
+                    <!-- Recipe Card 1 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/8dHftEOSQ1rQtE9Ecp2MsrXQR7mCsbbabjb5Hm--QSM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/Zm9vZGFuZHdpbmUu/Y29tL3RobWIvMmZD/SFZLNW5CMnA3V1h5/Z1NzTUpMMTNBUzhv/PS8xNTAweDAvZmls/dGVyczpub191cHNj/YWxlKCk6bWF4X2J5/dGVzKDE1MDAwMCk6/c3RyaXBfaWNjKCkv/MjAxMi1yLXhsLWNs/YXNzaWMtY2hvY29s/YXRlLWNoaXAtY29v/a2llcy0wMzM2YWY5/NzhjMWM0Nzk4ODA5/ZWMxODJlOGFmNzll/NS5qcGc" alt="Chocolate chip cookies" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Classic Chocolate Chip Cookies</h4>
+                            <p class="text-muted-foreground mb-4">Soft and chewy cookies with melted chocolate chips - the perfect treat for any occasion.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Maria Baker</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Card 2 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/NHLfEiuurKatqiu3hY0_YLudk6wLb5_WT7cv-o5eKNc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMi53/cC5jb20vd3d3LmRv/d25zaGlmdG9sb2d5/LmNvbS93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMS8wNS9Ib3ct/VG8tTWFrZS1DaGlj/a2VuLVN0aXItRnJ5/LTQtMS5qcGc" alt="Vegetable stir fry" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Vegetable Stir Fry</h4>
+                            <p class="text-muted-foreground mb-4">A quick and healthy vegetable stir fry with a savory sauce that comes together in under 20 minutes.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Alex Chen</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Card 3 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/5WuB8dxRqPPviQIrLA7_LhANHtZnjZopxFagjs_l7ic/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/dGhlZGFpbHltZWFs/LmNvbS9pbWcvZ2Fs/bGVyeS9jcmVhbXkt/Y2hpY2tlbi1hbGZy/ZWRvLXBhc3RhLXJl/Y2lwZS9jcmVhbXkt/Y2hpY2tlbi1hbGZy/ZWRvLXBhc3RhLXJl/Y2lwZS0xNjcwMzQ0/ODAwLmpwZw" alt="Chicken Alfredo" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Creamy Chicken Alfredo</h4>
+                            <p class="text-muted-foreground mb-4">Rich and creamy Alfredo sauce with tender chicken and fettuccine pasta - a restaurant favorite at home.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Luca Romano</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Card 4 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/TfkXYHjdDqPtLHCySjRcQWPCMAA7Sb4J7jGBPHESI-Y/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/YnVkZ2V0Ynl0ZXMu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDI0LzA0L0F2b2Nh/ZG8tVG9hc3QtRWdn/cy5qcGc" alt="Avocado Toast" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Avocado Toast with Eggs</h4>
+                            <p class="text-muted-foreground mb-4">The perfect healthy breakfast - creamy avocado, perfectly poached eggs, and a sprinkle of chili flakes.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Sophie Green</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Card 5 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/8euFu4CxjoTHbYFLkwPIKz6oln1u3ZLGST-8rBgByOA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNjQ2/MzU3NjYyL3Bob3Rv/L2Nob2NvbGF0ZS1m/b25kYW50LWxhdmEt/Y2FrZS13aXRoLXZh/bmlsbGEtaWNlLWNy/ZWFtLmpwZz9zPTYx/Mng2MTImdz0wJms9/MjAmYz1oMmVtUVVH/MU9Ia3MxMmRJdFZV/X2o0REcxa1lkN0pL/WC10dWc2aHJwd1NF/PQ" alt="Chocolate Lava Cake" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Chocolate Lava Cake</h4>
+                            <p class="text-muted-foreground mb-4">Warm, gooey chocolate center surrounded by moist cake - an irresistible dessert for chocolate lovers.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Pierre Dubois</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Card 6 -->
+                    <div class="recipe-card bg-background rounded-lg overflow-hidden shadow-md transition-all duration-300 cursor-pointer">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://imgs.search.brave.com/ZQjDFpnCrUOTWd6IzaHTwDGnjgwCuEesDAra7Ukz4ls/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzEzLzgxLzEzLzU1/LzM2MF9GXzEzODEx/MzU1NTFfbWVLcWFB/MWdybWJrOWZ1UVg0/M0Fab0lldHhYRVRD/M0UuanBn" alt="Cheeseburger" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg text-foreground mb-2">Classic Cheeseburger</h4>
+                            <p class="text-muted-foreground mb-4">Juicy beef patty with melted cheese, lettuce, tomato, and onion in a perfectly toasted bun.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-muted-foreground">By: Jack Thompson</span>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="text-sm text-muted-foreground">4.6</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-secondary text-secondary-foreground mt-12 py-8">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="font-semibold text-lg mb-4">Tasty Recipes</h4>
+                        <p class="text-sm">Share your culinary creations with food lovers around the world.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-4">Quick Links</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="hover:text-accent transition-colors">About Us</a></li>
+                            <li><a href="#" class="hover:text-accent transition-colors">Contact</a></li>
+                            <li><a href="#" class="hover:text-accent transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-accent transition-colors">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-4">Connect With Us</h4>
+                        <div class="flex space-x-4">
+                            <!-- Social icons here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-border mt-8 pt-8 text-center text-sm">
+                    <p>© 2023 Tasty Recipes. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const recipeCards = document.querySelectorAll('.recipe-card');
+            recipeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    alert('Recipe detail view would open here!');
+                });
+            });
+
+            const categoryButtons = document.querySelectorAll('button');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove('bg-accent', 'text-accent-foreground');
+                        btn.classList.add('bg-background', 'border', 'border-border', 'text-foreground');
+                    });
+                    this.classList.remove('bg-background', 'border', 'border-border', 'text-foreground');
+                    this.classList.add('bg-accent', 'text-accent-foreground');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
